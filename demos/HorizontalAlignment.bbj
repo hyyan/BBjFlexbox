@@ -23,7 +23,6 @@ layout!
 :               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
 
 
-layout!.slot("start").setStyle("color","red")
 layout!.slot("start")
 :      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-start")
 
