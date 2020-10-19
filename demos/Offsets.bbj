@@ -9,7 +9,8 @@ window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
 layout! = new Flexbox(window!, "OffsetsLayout")
 
 for i! = 0 to  11
-layout!
+
+    layout!
 :       .row()
 :	        .column("offset-" + str(i!))
 :               .offsetAt(i!, Flexbox.VIEWPORT_MEDIUM())
@@ -18,8 +19,9 @@ layout!
 next 
 
 for i! = 0 to  11
-name! = "offset-" + str(i!)
-layout!.slot(name!)
+
+    name! = "offset-" + str(i!)
+    layout!.slot(name!)
 :      .addStaticText(window!.getAvailableControlID(),0,0,0,0,name!)
 next
 

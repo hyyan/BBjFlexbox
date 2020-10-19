@@ -7,7 +7,8 @@ window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
 
 layout! = new Flexbox(window!, "demo")
 
-layout!.row()
+layout!
+:      .row()
 :	        .alignStartWhen(Flexbox.VIEWPORT_XSMALL())
 :	        .column("start")
 :               .sizeAt(12, Flexbox.VIEWPORT_XSMALL())
