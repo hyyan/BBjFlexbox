@@ -26,6 +26,10 @@
         "VerticalAlignment.bbj": {
             "name": "VerticalAlignment",
             "style": "css/flexboxgrid.min.css"
+        },
+        "DoesNotWork.bbj": {
+            "name": "DoesNotWork",
+            "style": "css/flexboxgrid.min.css"
         }
     }
 }
