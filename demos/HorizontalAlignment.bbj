@@ -21,7 +21,6 @@ layout!
 :	        .alignEndWhen(Flexbox.VIEWPORT_XSMALL())
 :	        .column("end")
 :               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
-rem : .fixedBox("bottom",0,0,50,50)
 
 
 layout!.slot("start").setStyle("color","red")
