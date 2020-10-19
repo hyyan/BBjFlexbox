@@ -1,0 +1,29 @@
+
+use ::../Flexbox.bbj::Flexbox
+
+sysGui!  = BBjAPI().openSysGui("X0")
+
+window! = BBjAPI().getSysGui().addWindow(10,10,800,600,"Offsets Demo",$00190003$)
+window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
+
+layout! = new Flexbox(window!, "OffsetsLayout")
+
+for i! = 0 to  11
+layout!
+:       .row()
+:	        .column("offset-" + str(i!))
+:               .offsetAt(i!, Flexbox.VIEWPORT_MEDIUM())
+:               .offsetAt(0, Flexbox.VIEWPORT_XSMALL())
+:               .autoSize()
+next 
+
+for i! = 0 to  11
+name! = "offset-" + str(i!)
+layout!.slot(name!)
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,name!)
+next
+
+process_events
+
+onExit:
+    release

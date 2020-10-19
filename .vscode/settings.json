@@ -1,0 +1,31 @@
+{
+    "cSpell.words": [
+        "Viewports",
+        "fname",
+        "gson",
+        "lname",
+        "xsmal"
+    ],
+    "bbj.bui.apps": {
+        "SimpleForm.bbj": {
+            "name": "SimpleForm",
+            "style": "css/flexboxgrid.min.css"
+        },
+        "Offsets.bbj": {
+            "name": "Offsets",
+            "style": "css/flexboxgrid.min.css"
+        },
+        "Nested.bbj": {
+            "name": "Nested",
+            "style": "css/flexboxgrid.min.css"
+        },
+        "HorizontalAlignment.bbj": {
+            "name": "HorizontalAlignment",
+            "style": "css/flexboxgrid.min.css"
+        },
+        "VerticalAlignment.bbj": {
+            "name": "VerticalAlignment",
+            "style": "css/flexboxgrid.min.css"
+        }
+    }
+}

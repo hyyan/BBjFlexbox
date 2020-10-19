@@ -1,0 +1,48 @@
+[
+  {
+    "name": "row-id",
+    "reverse": false,
+    "align": {
+      "center": [
+        "xsmall",
+        "small"
+      ],
+      "top": [
+        "xsmall",
+        "small"
+      ]
+    },
+    "distribute": {
+      "around": [
+        "xsmall",
+        "small"
+      ],
+      "between": [
+        "xsmall",
+        "small"
+      ]
+    },
+    "columns": [
+      {
+        "name": "column-id",
+        "order": {
+          "first": [
+            "xsmall",
+            "small"
+          ],
+          "last": [
+            "xsmall",
+            "small"
+          ]
+        },
+        "sizes": [
+          [
+            2,
+            "xsmall"
+          ]
+        ],
+        "rows": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,769 @@
+use java.util.ArrayList
+use java.util.LinkedHashMap
+use com.google.gson.Gson
+use com.google.gson.JsonParser
+use com.google.gson.JsonObject
+use com.google.gson.JsonArray
+use com.google.gson.JsonPrimitive
+rem /**
+rem  * FlexboxDiv
+rem  *
+rem  * @author "Hyyan Abo Fakher"
+rem  */
+class public FlexboxDiv
+    rem /**
+    rem  * The child window instance which is created by the flexbox to host
+    rem  * elements.
+    rem  */
+    field protected BBjChildWindow Window!
+    rem /**
+    rem  * The flexbox id
+    rem  */
+    field protected BBjString Name! = ""
+    rem /**
+    rem  * Disable default constructor
+    rem  */
+    method private FlexboxDiv()
+    methodend
+    rem /**
+    rem  * Construct new FlexboxDiv
+    rem  *
+    rem  * @param BBjChildWindow window! The child window instance
+    rem  * @param BBjString name! The child window id
+    rem  */
+    method public FlexboxDiv(BBjChildWindow window!, BBjString name!)
+        #Name! = name!
+        #Window! = window!
+    methodend
+    rem /**
+    rem  * Get the container id
+    rem  *
+    rem  * @return BBjString
+    rem  */
+    method public BBjString getName()
+        methodret #Name!
+    methodend
+    rem /**
+    rem  * Get the container created Window
+    rem  *
+    rem  * @return BBjChildWindow
+    rem  */
+    method public BBjChildWindow getWindow()
+        methodret #Window!
+    methodend
+    rem /**
+    rem  * Get the created rows map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  */
+    method public LinkedHashMap getRows()
+        methodret null()
+    methodend
+
+    methodend
+    rem /**
+    rem  * Get the created columns map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  */
+    method public LinkedHashMap getColumns()
+        methodret null()
+    methodend
+    rem /**
+    rem  * Get Row by its id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow getRow(BBjString name!)
+        rows! = #getRows()
+        row! = null()
+
+        if(rows!.containsKey(name!))
+            row! = cast(FlexboxRow, rows!.get(name!))
+        fi
+
+        methodret row!
+    methodend
+    rem /**
+    rem  * Get Row's child window by its id
+    rem  *
+    rem  * @return BBjChildWindow
+    rem  */
+    method public BBjChildWindow getRowRef(BBjString name!)
+        row! = #getRow(name!)
+        ref! = null()
+
+        if(row! <> null())
+            ref! = cast(BBjChildWindow, row!.getWindow())
+        fi
+
+        methodret ref!
+    methodend
+    rem /**
+    rem  * Get column by its id
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn getColumn(BBjString name!)
+        columns! = #getColumns()
+        column! = null()
+
+        if(columns!.containsKey(name!))
+            column! = cast(FlexboxColumn, columns!.get(name!))
+        fi
+
+        methodret column!
+    methodend
+    rem /**
+    rem  * Get Column's child window by its id
+    rem  *
+    rem  * @return BBjChildWindow
+    rem  */
+    method public BBjChildWindow getColumnRef(BBjString name!)
+        column! = #getColumn(name!)
+        ref! = null()
+
+        if(column! <> null())
+            ref! = cast(BBjChildWindow, column!.getWindow())
+        fi
+
+        methodret  ref!
+    methodend
+    rem /**
+    rem  * Get Column's or row's child window by its id
+    rem  *
+    rem  * @return BBjChildWindow
+    rem  */
+    method public BBjChildWindow slot(BBjString name!)
+        ref! = #getRowRef(name!)
+
+        if(ref! = null())
+            ref! = #getColumnRef(name!)
+        fi
+
+        methodret ref!
+    methodend
+
+classend
+rem /**
+rem  * Flexbox
+rem  *
+rem  * @author "Hyyan Abo Fakher"
+rem  */
+class public Flexbox extends FlexboxDiv
+    rem /**
+    rem  * The TopLevelWindows Instance which the flexbox is attached to.
+    rem  */
+    field protected BBjTopLevelWindow TopLevelWindow! = null()
+    rem /**
+    rem  * A map of created rows
+    rem  */
+    field protected LinkedHashMap Rows! = new LinkedHashMap()
+    rem /**
+    rem  * A map of created columns
+    rem  */
+    field protected LinkedHashMap Columns! = new LinkedHashMap()
+    rem /**
+    rem  * @return BBjString
+    rem  */
+    method public static BBjString VIEWPORT_XSMALL()
+        methodret "xs"
+    methodend
+    rem /**
+    rem  * @return BBjString
+    rem  */
+    method public static BBjString VIEWPORT_SMALL()
+        methodret "sm"
+    methodend
+    rem /**
+    rem  * @return BBjString
+    rem  */
+    method public static BBjString VIEWPORT_MEDIUM()
+        methodret "md"
+    methodend
+    rem /**
+    rem  * @return BBjString
+    rem  */
+    method public static BBjString VIEWPORT_LARGE()
+        methodret "lg"
+    methodend
+    rem /**
+    rem  * Disable default constructor
+    rem  */
+    method private Flexbox()
+    methodend
+    rem /**
+    rem  * Construct new flexbox container
+    rem  *
+    rem  * @param BBjString name! The container id
+    rem  */
+    method public Flexbox(BBjTopLevelWindow window!)
+        #this!(window!, java.util.UUID.randomUUID().toString())
+    methodend
+    rem /**
+    rem  * Construct new flexbox container
+    rem  *
+    rem  * @param BBjString name! The container id
+    rem  */
+    method public Flexbox(BBjString name!)
+        #this!(cast(BBjTopLevelWindow, BBjAPI().getSysGui().addWindow(10,10,100,100,"Flexbox",$00190003$)), name!)
+    methodend
+    rem /**
+    rem  * Construct new flexbox container
+    rem  *
+    rem  * @param BBjTopLevelWindow window! The window instance
+    rem  * @param BBjString name! The container id
+    rem  */
+    method public Flexbox(BBjTopLevelWindow topLevelWindow!, BBjString name!)
+        #super!(topLevelWindow!.addChildWindow(topLevelWindow!.getAvailableControlID(),1,2,3,4,"Row",$00100800$,BBjAPI().getSysGui().getAvailableContext()), name!)
+        #TopLevelWindow! = topLevelWindow!
+        #getWindow().addPanelStyle("bbj-flexbox")
+    methodend
+    rem /**
+    rem  * Get the flexbox top level window passed or created
+    rem  *
+    rem  * @return BBjTopLevelWindow
+    rem  */
+    method public BBjTopLevelWindow getTopLevelWindow()
+        methodret #TopLevelWindow!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row(BBjString name!)
+        row! = #getRow(name!)
+
+        if(row! <> null())
+            methodret cast(FlexboxRow, row!)
+        fi
+
+        row! = new FlexboxRow(#this!, name!)
+        #getRows().put(name!, row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row()
+        row! = new FlexboxRow(#this!)
+        #getRows().put(row!.getName(), row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Get the created rows map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  *
+    rem  * @override
+    rem  */
+    method public LinkedHashMap getRows()
+        methodret #Rows!
+    methodend
+    rem /**
+    rem  * Get the created rows columns
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  *
+    rem  * @override
+    rem  */
+    method public LinkedHashMap getColumns()
+        methodret #Columns!
+    methodend
+
+classend
+rem /**
+rem  * FlexboxRow
+rem  *
+rem  * @author "Hyyan Abo Fakher"
+rem  */
+class public FlexboxRow extends FlexboxDiv
+    rem /**
+    rem  * The row's container
+    rem  */
+    field protected Flexbox Container! = null()
+    rem /**
+    rem  * Disable default container
+    rem  */
+    method private FlexboxRow()
+    methodend
+    rem /**
+    rem  * Construct new flexbox row
+    rem  *
+    rem  * @param Flexbox container! The row's flexbox container
+    rem  * @param BBjString name! The row's id
+    rem  */
+    method public FlexboxRow(Flexbox container!)
+        #this!(container!, java.util.UUID.randomUUID().toString())
+    methodend
+    rem /**
+    rem  * Construct new flexbox row
+    rem  *
+    rem  * @param Flexbox container! The row's flexbox container
+    rem  * @param BBjString name! The row id
+    rem  */
+    method public FlexboxRow(Flexbox container!, BBjString name!)
+        #super!(container!.getWindow().addChildWindow(container!.getWindow().getAvailableControlID(),1,2,3,4,"Row",$00100800$,BBjAPI().getSysGui().getAvailableContext()), name!)
+        #Container! = container!
+        #getWindow().addPanelStyle("row")
+        #getWindow().addPanelStyle("bbj-flexbox-row")
+    methodend
+    rem /**
+    rem  * Construct new flexbox row
+    rem  *
+    rem  * @param FlexboxColumn container! The row's flexbox container
+    rem  * @param BBjString name! The row id
+    rem  */
+    method public FlexboxRow(FlexboxColumn container!, BBjString name!)
+        #super!(container!.getWindow().addChildWindow(container!.getWindow().getAvailableControlID(),1,2,3,4,"Row",$00100800$,BBjAPI().getSysGui().getAvailableContext()), name!)
+        #Container! = container!.getContainer().getContainer()
+        #getWindow().addPanelStyle("row")
+        #getWindow().addPanelStyle("bbj-flexbox-row")
+    methodend
+    rem /**
+    rem  * Get the row's container instance
+    rem  *
+    rem  * @return Flexbox
+    rem  */
+    method public Flexbox getContainer()
+        methodret #Container!
+    methodend
+    rem /**
+    rem  * put row at the start of the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignStartWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("start-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * center row at the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignCenterWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("center-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * put row at the end of the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignEndWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("end-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * put row at the top of the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignTopWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("top-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * put row at the middle of the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignMiddleWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("middle-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * put row at the bottom of the given viewport
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow alignBottomWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("bottom-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * distribute items are evenly in the row with equal space around them
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow distributeAroundWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("around-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * items are distributed so that the spacing between any two items (and the space to the edges) is equal.
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxRow
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxRow distributeEvenlyWhen(BBjString viewport$)
+        #getWindow().addPanelStyle("between-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Reverse the order of the row elements
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow reverse()
+        #getWindow().addPanelStyle("reverse")
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row(BBjString name!)
+        row! = #getRow(name!)
+
+        if(row! <> null())
+            methodret cast(FlexboxRow, row!)
+        fi
+
+        row! = new FlexboxRow(#getContainer(), name!)
+        #getRows().put(name!, row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row()
+        row! = new FlexboxRow(#getContainer())
+        #getRows().put(row!.getName(), row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Add new column to the container
+    rem  *
+    rem  * @param BBjString name! the column's id
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn column(BBjString name!)
+        column! = #getColumn(name!)
+
+        if(column! <> null())
+            methodret cast(FlexboxColumn, column!)
+        fi
+
+        column! = new FlexboxColumn(#this!, name!)
+        #getColumns().put(name!, column!)
+        methodret column!
+    methodend
+    rem /**
+    rem  * Add new column to the container
+    rem  *
+    rem  * @param BBjString name! the column's id
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn column()
+        column! = new FlexboxColumn(#this!)
+        #getColumns().put(column!.getName(), column!)
+        methodret column!
+    methodend
+    rem /**
+    rem  * Get the created rows map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  *
+    rem  * @override
+    rem  */
+    method public LinkedHashMap getRows()
+        methodret #getContainer().getRows()
+    methodend
+    rem /**
+    rem  * Get the created columns map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  */
+    method public LinkedHashMap getColumns()
+        methodret #getContainer().getColumns()
+    methodend
+
+classend
+rem /**
+rem  * FlexboxColumn
+rem  *
+rem  * @author "Hyyan Abo Fakher"
+rem  */
+class public FlexboxColumn extends FlexboxDiv
+    rem /**
+    rem  * The column's container
+    rem  */
+    field protected FlexboxRow Container! = null()
+    rem /**
+    rem  * Disable default container
+    rem  */
+    method private FlexboxColumn()
+    methodend
+    rem /**
+    rem  * Construct new flexbox column
+    rem  *
+    rem  * @param FlexboxRow container! The column's flexbox container
+    rem  */
+    method public FlexboxColumn(FlexboxRow container!)
+        #this!(container!, java.util.UUID.randomUUID().toString())
+    methodend
+    rem /**
+    rem  * Construct new flexbox column
+    rem  *
+    rem  * @param FlexboxRow container! The column's flexbox container
+    rem  * @param BBjString name! The column's id
+    rem  */
+    method public FlexboxColumn(FlexboxRow container!, BBjString name!)
+        #super!(container!.getWindow().addChildWindow(container!.getWindow().getAvailableControlID(),1,2,3,4,"Column",$00100800$,BBjAPI().getSysGui().getAvailableContext()), name!)
+        #Container! = container!
+        #getWindow().addStyle("bbj-flexbox-column")
+    methodend
+    rem /**
+    rem  * Get the column's container instance
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow getContainer()
+        methodret #Container!
+    methodend
+    rem /**
+    rem  * put the column at the begging of its container
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxColumn alignFirstWhen(BBjString viewport$)
+        #getWindow().addStyle("first-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * put the column at the end of its container
+    rem  *
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxColumn alignLastWhen(BBjString viewport$)
+        #getWindow().addStyle("last-" + viewport$)
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Size the column at the given viewport
+    rem  *
+    rem  * @param BBjNumber size! A number between 1 - 12
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxColumn sizeAt(BBjNumber size!,BBjString viewport$)
+        #getWindow().addStyle("col-" + viewport$ + "-"+ str(size!))
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Set the column offset at the given viewport
+    rem  *
+    rem  * @param BBjNumber offset! A number between 1 - 12
+    rem  * @param BBjString viewport$
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  *
+    rem  * @see Flexbox.VIEWPORT_XSMALL()
+    rem  * @see Flexbox.VIEWPORT_SMALL()
+    rem  * @see Flexbox.VIEWPORT_MEDIUM()
+    rem  * @see Flexbox.VIEWPORT_LARGE()
+    rem  */
+    method public FlexboxColumn offsetAt(BBjNumber size!,BBjString viewport$)
+        #getWindow().addStyle("col-" + viewport$ + "-offset-"+ str(size!))
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Auto size the column to its row
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn autoSize()
+        #getWindow().addStyle("col-xs")
+        methodret #this!
+    methodend
+    rem /**
+    rem  * Add new column to the container
+    rem  *
+    rem  * @param BBjString name! the column's id
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn column(BBjString name!)
+        column! = #getColumn(name!)
+
+        if(column! <> null())
+            methodret cast(FlexboxColumn, column!)
+        fi
+
+        column! = new FlexboxColumn(#getContainer(), name!)
+        #getColumns().put(name!, column!)
+        methodret column!
+    methodend
+    rem /**
+    rem  * Add new column to the container
+    rem  *
+    rem  * @param BBjString name! the column's id
+    rem  *
+    rem  * @return FlexboxColumn
+    rem  */
+    method public FlexboxColumn column()
+        column! = new FlexboxColumn(#getContainer())
+        #getColumns().put(column!.getName(), column!)
+        methodret column!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow innerRow(BBjString name!)
+        row! = #getRow(name!)
+
+        if(row! <> null())
+            methodret cast(FlexboxRow, row!)
+        fi
+
+        row! = new FlexboxRow(#this!, name!)
+        #getRows().put(name!, row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row(BBjString name!)
+        row! = #getRow(name!)
+
+        if(row! <> null())
+            methodret cast(FlexboxRow, row!)
+        fi
+
+        row! = new FlexboxRow(#getContainer().getContainer(), name!)
+        #getRows().put(name!, row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Add new row to the container
+    rem  *
+    rem  * @param BBjString name! the row's id
+    rem  *
+    rem  * @return FlexboxRow
+    rem  */
+    method public FlexboxRow row()
+        row! = new FlexboxRow(#getContainer().getContainer())
+        #getContainer().getContainer().getRows().put(row!.getName(), row!)
+        methodret row!
+    methodend
+    rem /**
+    rem  * Get the created rows map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  *
+    rem  * @override
+    rem  */
+    method public LinkedHashMap getRows()
+        methodret #getContainer().getContainer().getRows()
+    methodend
+    rem /**
+    rem  * Get the created columns map
+    rem  *
+    rem  * @return LinkedHashMap
+    rem  */
+    method public LinkedHashMap getColumns()
+        methodret #getContainer().getContainer().getColumns()
+    methodend
+
+classend

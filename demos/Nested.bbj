@@ -1,0 +1,47 @@
+use ::../Flexbox.bbj::Flexbox
+
+sysGui!  = BBjAPI().openSysGui("X0")
+
+window! = BBjAPI().getSysGui().addWindow(10,10,800,600,"Flexbox",$00190003$)
+window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
+
+layout! = new Flexbox(window!, "demo")
+
+layout!.row("row-1")
+:	   .alignCenterWhen(Flexbox.VIEWPORT_XSMALL())
+:	   .column("col-1")
+:           .sizeAt(12, Flexbox.VIEWPORT_XSMALL())
+:           .sizeAt(3, Flexbox.VIEWPORT_SMALL())
+:	   .column("col-2")
+:           .autoSize()
+:           .innerRow("row-2")
+:               .column("col-2.1")
+:                   .sizeAt(12, Flexbox.VIEWPORT_XSMALL())
+:               .column("col-2.2")
+:                   .autoSize()
+:               .column("col-2.3")
+:                   .autoSize()
+:      .row("row-1")
+:	        .column("col-3")
+:               .sizeAt(12, Flexbox.VIEWPORT_XSMALL())
+:               .sizeAt(3, Flexbox.VIEWPORT_SMALL())
+
+
+layout!.slot("col-1")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"col-1")
+
+layout!.slot("col-2.1")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"col-2.1")
+
+layout!.slot("col-2.2")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"col-2.2")
+
+layout!.slot("col-2.3")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"col-2.3")
+
+layout!.slot("col-3")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"col-3")
+process_events
+
+onExit:
+    release

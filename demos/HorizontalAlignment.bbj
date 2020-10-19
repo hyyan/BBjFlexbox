@@ -1,0 +1,38 @@
+use ::../Flexbox.bbj::Flexbox
+
+sysGui!  = BBjAPI().openSysGui("X0")
+
+window! = BBjAPI().getSysGui().addWindow(10,10,800,600,"Flexbox",$00190003$)
+window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
+
+layout! = new Flexbox(window!, "demo")
+
+layout!.row()
+:	        .alignStartWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("start")
+:               .sizeAt(12, Flexbox.VIEWPORT_XSMALL())
+:               .sizeAt(6, Flexbox.VIEWPORT_LARGE())
+:      .row()
+:	        .alignCenterWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("center")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:      .row()
+:	        .alignEndWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("end")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+rem : .fixedBox("bottom",0,0,50,50)
+
+
+layout!.slot("start").setStyle("color","red")
+layout!.slot("start")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-start")
+
+layout!.slot("center")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-center")
+
+layout!.slot("end")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-end")
+process_events
+
+onExit:
+    release

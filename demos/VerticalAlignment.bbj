@@ -1,0 +1,51 @@
+use ::../Flexbox.bbj::Flexbox
+
+sysGui!  = BBjAPI().openSysGui("X0")
+
+window! = BBjAPI().getSysGui().addWindow(10,10,800,600,"Flexbox",$00190003$)
+window!.setCallback(BBjAPI.ON_CLOSE,"onExit")
+
+layout! = new Flexbox(window!, "demo")
+
+layout!
+:       .row()
+:	        .alignTopWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("top-big-box")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:	        .column("top")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:       .row()
+:	        .alignMiddleWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("middle-big-box")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:	        .column("middle")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:       .row()
+:	        .alignBottomWhen(Flexbox.VIEWPORT_XSMALL())
+:	        .column("bottom-big-box")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+:	        .column("bottom")
+:               .sizeAt(6, Flexbox.VIEWPORT_XSMALL())
+
+
+layout!.slot("top-big-box")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be. Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on. Park girl they rich hour new well way you. Face ye be me been room we sons fond. Or neglected agreeable of discovery concluded oh it sportsman. Week to time in john. Son elegance use weddings separate. Ask too matter formed county wicket oppose talent. He immediate sometimes or to dependent in. Everything few frequently discretion surrounded did simplicity decisively. Less he year do with no sure loud.")
+layout!.slot("top")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-top")
+
+
+layout!.slot("middle-big-box")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be. Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on. Park girl they rich hour new well way you. Face ye be me been room we sons fond. Or neglected agreeable of discovery concluded oh it sportsman. Week to time in john. Son elegance use weddings separate. Ask too matter formed county wicket oppose talent. He immediate sometimes or to dependent in. Everything few frequently discretion surrounded did simplicity decisively. Less he year do with no sure loud.")
+layout!.slot("middle")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-middle")
+
+
+layout!.slot("bottom-big-box")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be. Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on. Park girl they rich hour new well way you. Face ye be me been room we sons fond. Or neglected agreeable of discovery concluded oh it sportsman. Week to time in john. Son elegance use weddings separate. Ask too matter formed county wicket oppose talent. He immediate sometimes or to dependent in. Everything few frequently discretion surrounded did simplicity decisively. Less he year do with no sure loud.")
+layout!.slot("bottom")
+:      .addStaticText(window!.getAvailableControlID(),0,0,0,0,"align-bottom")
+
+process_events
+
+onExit:
+    release
