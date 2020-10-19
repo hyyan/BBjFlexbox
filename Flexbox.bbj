@@ -1,10 +1,5 @@
 use java.util.ArrayList
 use java.util.LinkedHashMap
-use com.google.gson.Gson
-use com.google.gson.JsonParser
-use com.google.gson.JsonObject
-use com.google.gson.JsonArray
-use com.google.gson.JsonPrimitive
 rem /**
 rem  * FlexboxDiv
 rem  *
